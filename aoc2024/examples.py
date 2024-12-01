@@ -6,7 +6,7 @@ import yaml
 
 class Examples:
     """
-    Class for (potentailly multiple) example data sets for a given day
+    Class for (potentially multiple) example data sets for a given day
     Allows getting data, storing as yaml (so it can be manually edited) and
     testing against by providing a function.
     """
@@ -14,7 +14,8 @@ class Examples:
     def __init__(self, day):
         self.day = day
         self.file = f"tests/data/{day:02d}.yaml"
-        self.puzzle = Puzzle(year=2024, day=self.day)
+        self.puzzle = Puzzle(year=2024, day=day)
+        self.data = None
 
     def today(self):
         return datetime.now(self.puzzle.unlock_time().tzinfo)
@@ -25,23 +26,28 @@ class Examples:
     def available(self):
         return self.today() > self.unlock_time()
 
+    def cached(self):
+        return os.path.exists(self.file)
+
     def download(self):
         return [
             {"data": eg.input_data, "a": eg.answer_a, "b": eg.answer_b}
             for eg in self.puzzle.examples
         ]
 
-    def dump(self):
-        with open(self.file, "w") as yaml_file:
-            dump = yaml.dump(self.download(), default_style="|")
-            yaml_file.write(dump)
-
     def get(self):
-        if not os.path.exists(self.file):
-            self.dump()
+        if not self.data:
+            if os.path.exists(self.file):
+                with open(self.file) as stream:
+                    self.data = yaml.safe_load(stream)
+            else:
+                self.data = self.download()
+        return self.data
 
-        with open(self.file) as stream:
-            return yaml.safe_load(stream)
+    def dump(self):
+        data = self.get()
+        with open(self.file, "w") as yaml_file:
+            yaml_file.write(yaml.dump(data, default_style="|"))
 
     def test(self, part, fn):
         for example in self.get():

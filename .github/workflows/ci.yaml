@@ -1,3 +1,4 @@
+example = Examples(1).get()
 name: CI
 
 on: [push]
@@ -25,3 +26,6 @@ jobs:
 
       - name: Code Quality
         run: poetry run black . --check
+      
+      - name: Test with pytest
+        run: poetry run pytest --cov .
