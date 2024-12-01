@@ -2,6 +2,7 @@ from aocd.models import Puzzle
 from datetime import datetime
 import os.path
 import yaml
+from datetime import datetime
 
 
 class Examples:
@@ -11,7 +12,7 @@ class Examples:
     testing against by providing a function.
     """
 
-    def __init__(self, day):
+    def __init__(self, day=datetime.today().day):
         self.day = day
         self.file = f"tests/data/{day:02d}.yaml"
         self.puzzle = Puzzle(year=2024, day=day)
@@ -53,3 +54,22 @@ class Examples:
         for example in self.get():
             if example[part] is not None:
                 assert str(fn(example["data"])) == example[part]
+
+
+class AOC:
+    def __init__(self, day=datetime.today().day):
+        self.day = day
+        self.puzzle = Puzzle(year=2024, day=day)
+        self.example = Examples(day)
+
+    def get(self, example=False, number=0):
+        if example:
+            return self.example.get()[number]["data"]
+        else:
+            return self.puzzle.input_data
+
+    def submit(self, part, answer):
+        if part == "a":
+            self.puzzle.answer_a = answer
+        elif part == "b":
+            self.puzzle.answer_b = answer

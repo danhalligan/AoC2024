@@ -1,4 +1,3 @@
-example = Examples(1).get()
 name: CI
 
 on: [push]

@@ -1,7 +1,7 @@
 import importlib
 import pytest
 from itertools import product
-from aoc2024 import examples
+from aoc2024 import aoc
 
 
 # Test each day by importing the module and running part_a and part_b functions
@@ -15,4 +15,4 @@ def test_all(day, part):
     except AttributeError:
         pytest.skip(f"Skipping day {day}, part {part}")
 
-    examples.Examples(day).test(part, fn)
+    aoc.Examples(day).test(part, fn)

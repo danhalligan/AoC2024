@@ -1,7 +1,7 @@
-from aoc2024 import examples
+from aoc2024 import aoc
 
 
 for day in range(1, 25):
-    x = examples.Examples(day)
+    x = aoc.Examples(day)
     if x.available() and not x.cached():
         x.dump()
