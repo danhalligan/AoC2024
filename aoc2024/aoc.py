@@ -15,14 +15,19 @@ class Examples:
     def __init__(self, day=datetime.today().day):
         self.day = day
         self.file = f"tests/data/{day:02d}.yaml"
-        self.puzzle = Puzzle(year=2024, day=day)
+        self.puzzle = None
         self.data = None
 
+    def puzzle(self):
+        if not self.puzzle:
+            self.puzzle = Puzzle(year=2024, day=day)
+        return self.puzzle
+
     def today(self):
-        return datetime.now(self.puzzle.unlock_time().tzinfo)
+        return datetime.now(self.puzzle().unlock_time().tzinfo)
 
     def unlock_time(self):
-        return self.puzzle.unlock_time()
+        return self.puzzle().unlock_time()
 
     def available(self):
         return self.today() > self.unlock_time()
@@ -33,7 +38,7 @@ class Examples:
     def download(self):
         return [
             {"data": eg.input_data, "a": eg.answer_a, "b": eg.answer_b}
-            for eg in self.puzzle.examples
+            for eg in self.puzzle().examples
         ]
 
     def get(self):
