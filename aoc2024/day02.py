@@ -7,32 +7,22 @@ def inc(a, b):
 
 
 def check(seq):
-    return all(inc(*seq[i : i + 2]) for i in range(len(seq) - 1))
-
-
-def valid(data):
-    return [check(seq) or check(seq[::-1]) for seq in data]
+    return all(inc(a, b) for a, b in zip(seq, seq[1:]))
 
 
 def part_a(data):
     data = [ints(x) for x in data.splitlines()]
-    return sum(valid(data))
+    return sum(check(seq) or check(seq[::-1]) for seq in data)
 
 
-def check2(seq):
-    res = check(seq)
-    if res:
-        return True
-    for i in range(len(seq)):
-        if check(seq[:i] + seq[i + 1 :]):
-            return True
-    return False
+def skip1(seq):
+    return (seq[:i] + seq[i + 1 :] for i in range(len(seq)))
 
 
-def valid2(data):
-    return [check2(seq) or check2(seq[::-1]) for seq in data]
+def check_skip(seq):
+    return check(seq) or any(check(x) for x in skip1(seq))
 
 
 def part_b(data):
     data = [ints(x) for x in data.splitlines()]
-    return sum(valid2(data))
+    return sum(check_skip(seq) or check_skip(seq[::-1]) for seq in data)
