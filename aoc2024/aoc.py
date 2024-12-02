@@ -15,13 +15,13 @@ class Examples:
     def __init__(self, day=datetime.today().day):
         self.day = day
         self.file = f"tests/data/{day:02d}.yaml"
-        self.puzz = None
+        self._puzzle = None
         self.data = None
 
     def puzzle(self):
-        if not self.puzz:
-            self.puzz = Puzzle(year=2024, day=self.day)
-        return self.puzz
+        if not self._puzzle:
+            self._puzzle = Puzzle(year=2024, day=self.day)
+        return self._puzzle
 
     def today(self):
         return datetime.now(self.puzzle().unlock_time().tzinfo)
