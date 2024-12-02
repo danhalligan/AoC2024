@@ -1,9 +1,9 @@
 import numpy as np
-from .helpers import ints
+from .helpers import int_array
 
 
 def parse(data):
-    return np.array([ints(x) for x in data.splitlines()])
+    return np.array(int_array(data))
 
 
 def part_a(data):

@@ -1,5 +1,4 @@
-from aoc2024.aoc import AOC
-from aoc2024.helpers import ints
+from aoc2024.helpers import int_array
 
 
 def inc(a, b):
@@ -11,7 +10,7 @@ def check(seq):
 
 
 def part_a(data):
-    data = [ints(x) for x in data.splitlines()]
+    data = int_array(data)
     return sum(check(seq) or check(seq[::-1]) for seq in data)
 
 
@@ -24,5 +23,5 @@ def check_skip(seq):
 
 
 def part_b(data):
-    data = [ints(x) for x in data.splitlines()]
+    data = int_array(data)
     return sum(check_skip(seq) or check_skip(seq[::-1]) for seq in data)
