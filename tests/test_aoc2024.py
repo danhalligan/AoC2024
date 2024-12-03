@@ -15,4 +15,4 @@ def test_all(day, part):
     except AttributeError:
         pytest.skip(f"Skipping day {day}, part {part}")
 
-    aoc.Examples(day).test(part, fn)
+    aoc.Puzzle(day).test_examples(part, fn)
