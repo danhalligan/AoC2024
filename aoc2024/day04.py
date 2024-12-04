@@ -21,8 +21,7 @@ def words(data):
 
 
 def match(arr):
-    txt = "".join(arr)
-    return txt == "XMAS" or txt == "SAMX"
+    return all(arr == ["X", "M", "A", "S"]) or all(arr == ["S", "A", "M", "X"])
 
 
 def part_a(data):
