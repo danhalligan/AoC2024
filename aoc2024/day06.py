@@ -35,8 +35,7 @@ def try_obstacle(grid, start, pos):
             pos += dir
             if (pos, dir) in visited:
                 return True
-            else:
-                visited[(pos, dir)] = True
+            visited[(pos, dir)] = True
     return False
 
 
