@@ -13,10 +13,9 @@ def visit(grid, start):
     pos, dir = start, -1j
     while pos + dir in grid.keys():
         if grid[pos + dir] == "#":
-            dir = {-1j: 1, 1: 1j, 1j: -1, -1: -1j}[dir]
-        else:
-            pos += dir
-            visited[pos] = True
+            dir *= 1j
+        pos += dir
+        visited[pos] = True
     return visited
 
 
@@ -31,7 +30,7 @@ def try_obstacle(grid, start, pos):
     visited = {(start, dir): True}
     while pos + dir in grid.keys():
         if grid[pos + dir] == "#":
-            dir = {-1j: 1, 1: 1j, 1j: -1, -1: -1j}[dir]
+            dir *= 1j
         else:
             pos += dir
             if (pos, dir) in visited:
