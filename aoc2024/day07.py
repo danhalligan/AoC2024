@@ -8,12 +8,12 @@ def parse_line(line):
     return int(ans), [int(x) for x in nums.split()]
 
 
+def solve(nums, fns):
+    return reduce(lambda a, b: fns[b[0]](a, b[1]), enumerate(nums[1:]), nums[0])
+
+
 def test_eqn(ans, nums, ops=[add, mul]):
-    for fns in product(ops, repeat=len(nums) - 1):
-        tot = reduce(lambda a, b: fns[b[0]](a, b[1]), enumerate(nums[1:]), nums[0])
-        if tot == ans:
-            return True
-    return False
+    return any(solve(nums, fns) == ans for fns in product(ops, repeat=len(nums) - 1))
 
 
 def cat(a, b):
