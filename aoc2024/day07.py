@@ -16,6 +16,10 @@ def test_eqn(ans, nums, ops=[add, mul]):
     return False
 
 
+def cat(a, b):
+    return int(str(a) + str(b))
+
+
 def part_a(data):
     data = [parse_line(line) for line in data.lines()]
     return sum(x[0] for x in data if test_eqn(*x))
@@ -23,5 +27,4 @@ def part_a(data):
 
 def part_b(data):
     data = [parse_line(line) for line in data.lines()]
-    cat = lambda x, y: int(str(x) + str(y))
     return sum(x[0] for x in data if test_eqn(*x, ops=[add, mul, cat]))
