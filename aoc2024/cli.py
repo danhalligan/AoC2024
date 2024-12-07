@@ -13,26 +13,20 @@ def solve(days: List[int] = typer.Argument(None)):
     for day in days:
         day = int(day)
         module = importlib.import_module(f"aoc2024.day{day:02d}")
-        puzzle = Puzzle(day=day)
-        if not puzzle.available():
+        try:
+            puzzle = Puzzle(day=day)
+        except Exception:
             continue
 
         print(f"--- Day {day}: {puzzle.title()} ---")
-
-        try:
-            print("Part A:", getattr(module, "part_a")(puzzle.data()))
-        except AttributeError:
-            print("No part A")
-        try:
-            print("Part B:", getattr(module, "part_b")(puzzle.data()))
-        except AttributeError:
-            print("No part B")
+        for part in ["a", "b"]:
+            try:
+                result = getattr(module, f"part_{part}")(puzzle.data())
+                print(f"Part {part}:", result)
+            except AttributeError:
+                print(f"No part {part}")
         print()
 
 
 def main():
     app()
-
-
-if __name__ == "__main__":
-    main()

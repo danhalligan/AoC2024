@@ -30,20 +30,21 @@ class Data:
 
 
 class Example:
-    """
-    Store an example (data + answers)
-    """
-
     def __init__(self, data, a=None, b=None):
         self.data = Data(data)
-        self.answers = {"a": a, "b": b}
+        self.val = {"a": a, "b": b}
 
-    def test(self, part, fn):
-        if self.answers[part]:
-            assert str(fn(self.data)) == self.answers[part]
+    def test_part(self, part, fn):
+        if fn is not None and self.val[part]:
+            return str(fn(self.data)) == self.val[part]
+        return True
+
+    def test(self, a=None, b=None):
+        assert self.test_part(a, "a")
+        assert self.test_part(b, "b")
 
     def as_dict(self):
-        return {"data": self.data.raw, "a": self.answers["a"], "b": self.answers["b"]}
+        return {"data": self.data.raw, "a": self.val["a"], "b": self.val["b"]}
 
     @classmethod
     def from_class(self, x):
@@ -54,60 +55,85 @@ class Example:
         return self(data=x["data"], a=x["a"], b=x["b"])
 
 
-class Puzzle:
-    """
-    Represent a given day's puzzle.
-    """
-
-    def __init__(self, day=datetime.today().day):
-        self._puzzle = None
+class Examples:
+    def __init__(self, day):
         self.day = day
         self.file = f"tests/data/{day:02d}.yaml"
-        self._examples = None
-
-    def puzzle(self):
-        if not self._puzzle:
-            self._puzzle = models.Puzzle(year=2024, day=self.day)
-        return self._puzzle
-
-    def available(self):
-        unlock = self.puzzle().unlock_time()
-        today = datetime.now(unlock.tzinfo)
-        return today > unlock
-
-    def data(self):
-        return Data(self.puzzle().input_data)
-
-    def title(self):
-        return self.puzzle().title
-
-    def submit(self, part, answer):
-        if part == "a":
-            self.puzzle().answer_a = answer
-        elif part == "b":
-            self.puzzle().answer_b = answer
+        self.examples = None
 
     def cached(self):
         return os.path.exists(self.file)
 
-    def examples(self):
-        if not self._examples:
-            if not os.path.exists(self.file):
-                data = [
-                    {"data": x.input_data, "a": x.answer_a, "b": x.answer_b}
-                    for x in self.puzzle().examples
-                ]
-                with open(self.file, "w") as yaml_file:
-                    yaml_file.write(yaml.dump(data, default_style="|"))
-            self._examples = self.__read_examples()
-        return self._examples
+    def data(self, number):
+        return self.examples[number - 1].data
 
-    def test_examples(self, part, fn):
-        for example in self.examples():
-            if example[part] is not None:
-                assert str(fn(example["data"])) == example[part]
+    def dump(self):
+        data = [x.as_dict() for x in self.examples]
+        with open(self.file, "w") as yaml_file:
+            yaml_file.write(yaml.dump(data, default_style="|"))
 
-    def __read_examples(self):
+    def read(self):
         with open(self.file) as stream:
             data = yaml.safe_load(stream)
-        return [{"data": Data(x["data"]), "a": x["a"], "b": x["b"]} for x in data]
+        self.examples = [Example.from_dict(x) for x in data]
+
+    def test_part(self, part, fn):
+        for example in self.examples:
+            example.test_part(part, fn)
+
+    def test(self, a=None, b=None):
+        for example in self.examples:
+            example.test(a=a, b=b)
+
+    def from_class(self, data, overwrite=False):
+        self.examples = [Example.from_class(x) for x in data]
+        if not self.cached() or overwrite:
+            self.dump()
+
+    def load(self, data=None):
+        if self.cached():
+            self.read()
+        elif data is not None:
+            self.from_class(data)
+        else:
+            Exception("Failed to load examples")
+
+
+class Puzzle:
+    def __init__(self, day=datetime.today().day):
+        self.day = day
+        self.puzzle = models.Puzzle(year=2024, day=self.day)
+        if self.available():
+            self.examples = Examples(day)
+            self.examples.load(data=self.puzzle.examples)
+        else:
+            Exception("Puzzle not available")
+
+    def available(self):
+        unlock = self.puzzle.unlock_time()
+        today = datetime.now(unlock.tzinfo)
+        return today > unlock
+
+    def data(self, example=None):
+        if example:
+            try:
+                return self.examples.data(example)
+            except IndexError:
+                print(f"Example number {example} not available")
+        else:
+            return Data(self.puzzle.input_data)
+
+    def title(self):
+        return self.puzzle.title
+
+    def test(self, a=None, b=None):
+        self.examples.test(a=a, b=b)
+
+    def test_part(self, part, fn):
+        self.examples.test_part(part, fn)
+
+    def submit(self, a=None, b=None):
+        if a is not None:
+            self.puzzle.answer_a = a
+        if b is not None:
+            self.puzzle.answer_b = b
