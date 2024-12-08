@@ -1,7 +1,7 @@
 import typer
 from typing import List
 import importlib
-from .aoc import Puzzle
+from aoc2024.aoc import Puzzle, DateException
 
 app = typer.Typer()
 
@@ -15,7 +15,7 @@ def solve(days: List[int] = typer.Argument(None)):
         module = importlib.import_module(f"aoc2024.day{day:02d}")
         try:
             puzzle = Puzzle(day=day)
-        except Exception:
+        except DateException:
             continue
 
         print(f"--- Day {day}: {puzzle.title()} ---")

@@ -100,18 +100,18 @@ class Examples:
         elif data is not None:
             self.from_class(data)
         else:
-            Exception("Failed to load examples")
+            raise Exception("Failed to load examples")
 
 
 class Puzzle:
     def __init__(self, day=datetime.today().day):
         self.day = day
-        self.puzzle = models.Puzzle(year=2024, day=self.day)
+        self.puzzle = models.Puzzle(year=2024, day=day)
         if self.available():
             self.examples = Examples(day)
             self.examples.load(data=self.puzzle.examples)
         else:
-            DateException("Puzzle not available")
+            raise DateException("Puzzle not available")
 
     def available(self):
         unlock = self.puzzle.unlock_time()
