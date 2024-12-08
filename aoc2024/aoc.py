@@ -98,7 +98,7 @@ class Examples:
         if self.cached():
             self.read()
         elif puzzle is not None:
-            self.from_class(puzzle.examples)
+            self.from_class(puzzle.puzzle().examples)
         else:
             raise Exception("Failed to load examples")
 
@@ -106,12 +106,17 @@ class Examples:
 class Puzzle:
     def __init__(self, day=datetime.today().day):
         self.day = day
-        self.puzzle = models.Puzzle(year=2024, day=day)
+        self._puzzle = None
         if self.available():
             self.examples = Examples(day)
-            self.examples.load(data=self.puzzle)
+            self.examples.load(puzzle=self)
         else:
             raise DateException("Puzzle not available")
+
+    def puzzle(self):
+        if self._puzzle is None:
+            self._puzzle = models.Puzzle(year=2024, day=self.day)
+        return self._puzzle
 
     def unlock_time(self):
         tz = timezone(timedelta(0), "GMT")
@@ -129,10 +134,10 @@ class Puzzle:
             except IndexError:
                 print(f"Example number {example} not available")
         else:
-            return Data(self.puzzle.input_data)
+            return Data(self.puzzle().input_data)
 
     def title(self):
-        return self.puzzle.title
+        return self.puzzle().title
 
     def test(self, a=None, b=None):
         self.examples.test(a=a, b=b)
@@ -142,6 +147,6 @@ class Puzzle:
 
     def submit(self, a=None, b=None):
         if a is not None:
-            self.puzzle.answer_a = a
+            self.puzzle().answer_a = a
         if b is not None:
-            self.puzzle.answer_b = b
+            self.puzzle().answer_b = b
