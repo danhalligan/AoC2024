@@ -1,5 +1,5 @@
 from aocd import models
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import os.path
 import yaml
 import re
@@ -113,8 +113,12 @@ class Puzzle:
         else:
             raise DateException("Puzzle not available")
 
+    def unlock_time(self):
+        tz = timezone(timedelta(0), "GMT")
+        return datetime(2024, 12, self.day, 5, 0, tzinfo=tz)
+
     def available(self):
-        unlock = self.puzzle.unlock_time()
+        unlock = self.unlock_time()
         today = datetime.now(unlock.tzinfo)
         return today > unlock
 
