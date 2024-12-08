@@ -13,7 +13,7 @@ def test_all(day, part):
         module = importlib.import_module(f"aoc2024.day{day:02d}")
         fn = getattr(module, f"part_{part}")
         aoc.Puzzle(day).test_part(part, fn)
-    except Exception:
+    except aoc.DateException:
         pytest.skip(f"Skipping day {day}: day not available")
     except AttributeError:
         pytest.skip(f"Skipping day {day}: part {part} not available")

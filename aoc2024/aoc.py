@@ -5,6 +5,10 @@ import yaml
 import re
 
 
+class DateException(Exception):
+    pass
+
+
 class Data:
     """
     Access to various input data formats
@@ -107,7 +111,7 @@ class Puzzle:
             self.examples = Examples(day)
             self.examples.load(data=self.puzzle.examples)
         else:
-            Exception("Puzzle not available")
+            DateException("Puzzle not available")
 
     def available(self):
         unlock = self.puzzle.unlock_time()
