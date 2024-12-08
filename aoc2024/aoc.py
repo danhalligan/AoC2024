@@ -94,11 +94,11 @@ class Examples:
         if not self.cached() or overwrite:
             self.dump()
 
-    def load(self, data=None):
+    def load(self, puzzle=None):
         if self.cached():
             self.read()
-        elif data is not None:
-            self.from_class(data)
+        elif puzzle is not None:
+            self.from_class(puzzle.examples)
         else:
             raise Exception("Failed to load examples")
 
@@ -109,7 +109,7 @@ class Puzzle:
         self.puzzle = models.Puzzle(year=2024, day=day)
         if self.available():
             self.examples = Examples(day)
-            self.examples.load(data=self.puzzle.examples)
+            self.examples.load(data=self.puzzle)
         else:
             raise DateException("Puzzle not available")
 
