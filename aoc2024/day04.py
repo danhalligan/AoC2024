@@ -21,7 +21,8 @@ def words(data):
 
 
 def match(arr):
-    return all(arr == ["X", "M", "A", "S"]) or all(arr == ["S", "A", "M", "X"])
+    word = "".join(arr)
+    return word in ["XMAS", "SAMX"]
 
 
 def part_a(data):
@@ -30,11 +31,9 @@ def part_a(data):
 
 
 def match2(arr):
-    for w1 in [["M", "A", "S"], ["S", "A", "M"]]:
-        for w2 in [["M", "A", "S"], ["S", "A", "M"]]:
-            if all(arr.diagonal() == w1) and all(np.fliplr(arr).diagonal() == w2):
-                return True
-    return False
+    d1 = "".join(arr.diagonal())
+    d2 = "".join(np.fliplr(arr).diagonal())
+    return d1 in ["MAS", "SAM"] and d2 in ["MAS", "SAM"]
 
 
 def part_b(data):

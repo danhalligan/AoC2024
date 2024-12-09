@@ -5,35 +5,31 @@ def parse(data):
     return rules, orders
 
 
-def check_order(order, rules):
-    for rule in rules:
-        if all([x in order for x in rule]):
-            if order.index(rule[0]) > order.index(rule[1]):
-                return False
-    return True
+def check_order(x, rules):
+    return not any(a in x and b in x and x.index(a) > x.index(b) for a, b in rules)
 
 
-def mid_sum(orders):
-    return sum(int(x[len(x) // 2]) for x in orders)
+def mid(x):
+    return int(x[len(x) // 2])
 
 
 def part_a(data):
     rules, orders = parse(data)
-    return mid_sum(x for x in orders if check_order(x, rules))
+    return sum(mid(x) for x in orders if check_order(x, rules))
 
 
-def fix_order(order, rules):
-    for rule in rules:
-        if all([x in order for x in rule]):
-            i1 = order.index(rule[0])
-            i2 = order.index(rule[1])
+def fix_order(x, rules):
+    for a, b in rules:
+        if a in x and b in x:
+            i1 = x.index(a)
+            i2 = x.index(b)
             if i1 > i2:
-                order[i2], order[i1] = order[i1], order[i2]
-                return fix_order(order, rules)
-    return order
+                x[i2], x[i1] = x[i1], x[i2]
+                return fix_order(x, rules)
+    return x
 
 
 def part_b(data):
     rules, orders = parse(data)
     orders = [fix_order(x, rules) for x in orders if not check_order(x, rules)]
-    return mid_sum(orders)
+    return sum(mid(x) for x in orders)

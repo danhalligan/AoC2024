@@ -10,11 +10,11 @@ def parse(data):
 
 def visit(grid, start):
     visited = {start: True}
-    pos, dir = start, -1j
-    while pos + dir in grid.keys():
-        if grid[pos + dir] == "#":
-            dir *= 1j
-        pos += dir
+    pos, direction = start, -1j
+    while pos + direction in grid.keys():
+        if grid[pos + direction] == "#":
+            direction *= 1j
+        pos += direction
         visited[pos] = True
     return visited
 
@@ -26,16 +26,16 @@ def part_a(data):
 # for a loop we need to visit a pos in the same direction as we did previously
 def try_obstacle(grid, start, pos):
     grid[pos] = "#"
-    pos, dir = start, -1j
-    visited = {(start, dir): True}
-    while pos + dir in grid.keys():
-        if grid[pos + dir] == "#":
-            dir *= 1j
+    pos, direction = start, -1j
+    visited = {(start, direction): True}
+    while pos + direction in grid.keys():
+        if grid[pos + direction] == "#":
+            direction *= 1j
         else:
-            pos += dir
-            if (pos, dir) in visited:
+            pos += direction
+            if (pos, direction) in visited:
                 return True
-            visited[(pos, dir)] = True
+            visited[(pos, direction)] = True
     return False
 
 
