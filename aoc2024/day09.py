@@ -1,17 +1,15 @@
 def part_a(data):
     disk = []
     for i, v in enumerate(list(data.raw)):
-        if i % 2 == 0:
-            disk += [i // 2] * int(v)
-        else:
-            disk += ["."] * int(v)
+        btype = i // 2 if i % 2 == 0 else None
+        disk += [btype] * int(v)
 
     for i in range(len(disk) - 1, -1, -1):
-        if disk[i] != "." and "." in disk and disk.index(".") < i:
-            gap = disk.index(".")
+        if disk[i] and disk.index(None) < i:
+            gap = disk.index(None)
             disk[gap], disk[i] = disk[i], disk[gap]
 
-    return sum(i * v for i, v in enumerate(disk) if v != ".")
+    return sum(i * v for i, v in enumerate(disk) if v)
 
 
 def checksum(disk):
@@ -29,10 +27,8 @@ def checksum(disk):
 def part_b(data):
     disk = []
     for i, v in enumerate(list(data.raw)):
-        if i % 2 == 0:
-            disk += [(i // 2, int(v))]
-        else:
-            disk += [(None, int(v))]
+        btype = i // 2 if i % 2 == 0 else None
+        disk += [(btype, int(v))]
 
     for i in range(len(disk) - 1, -1, -1):
         b1, l1 = disk[i]
