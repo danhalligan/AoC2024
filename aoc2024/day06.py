@@ -1,9 +1,5 @@
 def parse(data):
-    grid = {
-        complex(i, j): v
-        for j, line in enumerate(data.lines())
-        for i, v in enumerate(list(line))
-    }
+    grid = data.grid()
     start = [k for k, v in grid.items() if v == "^"][0]
     return grid, start
 

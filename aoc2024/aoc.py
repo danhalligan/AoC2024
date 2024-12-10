@@ -32,6 +32,16 @@ class Data:
     def int_array(self):
         return [[*map(int, line.split())] for line in self.lines()]
 
+    def grid(self, vtype=str):
+        """
+        Grid of values with complex number coordinates as dict
+        """
+        return {
+            complex(i, j): vtype(v)
+            for j, line in enumerate(self.lines())
+            for i, v in enumerate(list(line))
+        }
+
 
 class Example:
     def __init__(self, data, a=None, b=None):

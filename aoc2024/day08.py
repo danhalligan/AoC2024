@@ -1,16 +1,8 @@
 from itertools import permutations
 
 
-def parse(data):
-    return {
-        complex(i, j): v
-        for j, line in enumerate(data.lines())
-        for i, v in enumerate(list(line))
-    }
-
-
 def part_a(data):
-    grid = parse(data)
+    grid = data.grid()
     antipoles = []
     for freq in {*grid.values()} - {"."}:
         locations = [k for k in grid if grid[k] == freq]
@@ -20,7 +12,7 @@ def part_a(data):
 
 
 def part_b(data):
-    grid = parse(data)
+    grid = data.grid()
     antipoles = []
     for freq in {*grid.values()} - {"."}:
         locations = [k for k in grid if grid[k] == freq]
