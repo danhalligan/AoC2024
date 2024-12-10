@@ -48,14 +48,17 @@ class Example:
         self.data = Data(data)
         self.val = {"a": a, "b": b}
 
-    def test_part(self, part, fn):
+    def _test_part(self, part, fn):
         if fn is not None and self.val[part]:
             return str(fn(self.data)) == self.val[part]
         return True
 
+    def test_part(self, part, fn):
+        assert self._test_part(part, fn)
+
     def test(self, a=None, b=None):
-        assert self.test_part(a, "a")
-        assert self.test_part(b, "b")
+        assert self._test_part(a, "a")
+        assert self._test_part(b, "b")
 
     def as_dict(self):
         return {"data": self.data.raw, "a": self.val["a"], "b": self.val["b"]}
