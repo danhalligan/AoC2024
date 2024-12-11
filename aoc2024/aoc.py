@@ -50,7 +50,7 @@ class Example:
 
     def _test_part(self, part, fn):
         if fn is not None and self.val[part]:
-            return str(fn(self.data)) == self.val[part]
+            return str(fn(self.data)) == str(self.val[part])
         return True
 
     def test_part(self, part, fn):
