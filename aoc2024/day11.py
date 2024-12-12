@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import Counter, defaultdict
 
 
 # Order doesn't matter, we just need to count how many of each stone type we
@@ -18,9 +18,7 @@ def update(stones):
 
 
 def solve(data, n):
-    stones = defaultdict(int)
-    for stone in data:
-        stones[stone] += 1
+    stones = Counter(data)
     for _ in range(n):
         stones = update(stones)
     return sum(stones.values())

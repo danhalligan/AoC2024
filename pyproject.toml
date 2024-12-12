@@ -6,7 +6,7 @@ authors = ["Daniel Halligan <dan.halligan@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 aocd = "^0.1"
 typer = "^0.9.0"
 datetime = "^5.3"
