@@ -1,6 +1,3 @@
-from aoc2024.aoc import Puzzle
-
-
 def neighbours(grid, x):
     return [x + m for m in [1, +1j, -1j, -1] if x + m in grid]
 
