@@ -44,13 +44,14 @@ class Data:
 
 
 class Example:
-    def __init__(self, data, a=None, b=None):
+    def __init__(self, data, a=None, b=None, args={}):
         self.data = Data(data)
         self.val = {"a": a, "b": b}
+        self.args = args
 
     def _test_part(self, part, fn):
         if fn is not None and self.val[part]:
-            return str(fn(self.data)) == str(self.val[part])
+            return str(fn(self.data, **self.args)) == str(self.val[part])
         return True
 
     def test_part(self, part, fn):
@@ -61,15 +62,16 @@ class Example:
         assert self._test_part(b, "b")
 
     def as_dict(self):
-        return {"data": self.data.raw, "a": self.val["a"], "b": self.val["b"]}
+        return {
+            "data": self.data.raw,
+            "a": self.val["a"],
+            "b": self.val["b"],
+            "args": self.args,
+        }
 
     @classmethod
     def from_class(self, x):
         return self(data=x.input_data, a=x.answer_a, b=x.answer_b)
-
-    @classmethod
-    def from_dict(self, x):
-        return self(data=x["data"], a=x["a"], b=x["b"])
 
 
 class Examples:
@@ -92,7 +94,7 @@ class Examples:
     def read(self):
         with open(self.file) as stream:
             data = yaml.safe_load(stream)
-        self.examples = [Example.from_dict(x) for x in data]
+        self.examples = [Example(**x) for x in data]
 
     def test_part(self, part, fn):
         for example in self.examples:

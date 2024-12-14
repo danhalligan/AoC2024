@@ -1,19 +1,17 @@
 def neighbours(grid, x):
+    """valid neighbours of a cell"""
     return [x + m for m in [1, +1j, -1j, -1] if x + m in grid]
 
 
 def flood(grid, cell):
-    q = [cell]
-    seen = set()
+    """Flood fill from cell to find all cells in region"""
+    q, seen = [cell], set()
     while q:
         cell = q.pop(0)
         seen.add(cell)
-        moves = [
-            move
-            for move in neighbours(grid, cell)
-            if move not in seen and move not in q and grid[move] == grid[cell]
-        ]
-        q += moves
+        for move in neighbours(grid, cell):
+            if move not in seen and move not in q and grid[move] == grid[cell]:
+                q += [move]
     return seen
 
 
