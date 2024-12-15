@@ -42,6 +42,10 @@ class Data:
             for i, v in enumerate(list(line))
         }
 
+    def sections(self):
+        a, b = self.raw.split("\n\n")
+        return Data(a), Data(b)
+
 
 class Example:
     def __init__(self, data, a=None, b=None, args={}):
