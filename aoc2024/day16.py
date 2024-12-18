@@ -38,7 +38,6 @@ def part_b(data):
     best[start, 1] = (0, [])
     while q:
         s, _, p, d = heappop(q)
-
         for s, pn, dn in moves(grid, s, p, d):
             if (pn, dn) not in best or s <= best[pn, dn][0]:
                 i += 1
