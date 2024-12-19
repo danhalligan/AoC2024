@@ -25,7 +25,6 @@ def move(robots, t, dx, dy):
     for _ in range(t):
         for i, ((x, y), (vx, vy)) in enumerate(robots):
             robots[i] = (((x + vx) % dx, (y + vy) % dy), (vx, vy))
-    return robots
 
 
 def safety(robots, dx, dy):
@@ -49,13 +48,13 @@ def has_cluster(robots, n, dx, dy):
 
 def part_a(data, dx=101, dy=103):
     robots = list(parse(data))
-    robots = move(robots, 100, dx, dy)
+    move(robots, 100, dx, dy)
     return safety(robots, dx, dy)
 
 
 def part_b(data, dx=101, dy=103):
     robots = list(parse(data))
     for i in range(10_000):
-        robots = move(robots, 1, dx, dy)
+        move(robots, 1, dx, dy)
         if has_cluster(robots, 3, dx, dy):
             return i + 1

@@ -4,12 +4,20 @@ def part_a(data):
         btype = i // 2 if i % 2 == 0 else None
         disk += [btype] * int(v)
 
-    for i in range(len(disk) - 1, -1, -1):
-        if disk[i] and disk.index(None) < i:
-            gap = disk.index(None)
-            disk[gap], disk[i] = disk[i], disk[gap]
+    i = 0
+    j = len(disk) - 1
+    tot = 0
+    while i <= j:
+        if disk[i] is not None:
+            tot += i * disk[i]
+        else:
+            while disk[j] is None:
+                j -= 1
+            tot += i * disk[j]
+            j -= 1
+        i += 1
 
-    return sum(i * v for i, v in enumerate(disk) if v)
+    return tot
 
 
 def checksum(disk):
