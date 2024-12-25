@@ -1,8 +1,9 @@
-from aoc2024.aoc import Puzzle
 from heapq import heappush, heappop
 from itertools import product
 from functools import cache
 import re
+from math import inf
+from collections import Counter, defaultdict
 
 numkeypad = (
     (0j, "7"),
@@ -57,7 +58,6 @@ def dij(graph, start):
                     paths[n] |= set([-m])
                 i += 1
                 heappush(q, (d[n], i, n))
-
     return paths
 
 
@@ -77,35 +77,26 @@ def paths(pad, start, end):
     return ["".join(p) + "A" for p in recover(dij(pad, sp), ep)]
 
 
-def routes(pad, code):
-    seqs = [list(paths(pad, a, b)) for a, b in zip("A" + code, code)]
-    for seq in product(*seqs):
-        yield "".join(["".join(x) if x else "" for x in seq])
-        break
+@cache
+def route(pad, code):
+    seq = [paths(pad, a, b)[0] for a, b in zip("A" + code, code)]
+    return "".join(["".join(x) if x else "" for x in seq])
 
 
 def filter_routes(routes):
-    r = set(routes)
-    best = min(len(x) for x in r)
-    return [x for x in r if len(x) == best]
-
-
-def best_routes(r1):
-    r2 = [y for x in r1 for y in routes(dirkeypad, x)]
-    return filter_routes(r2)
+    best = min(len(x) for x in routes)
+    return [x for x in routes if len(x) == best]
 
 
 def abroute(a, b, n=2):
-    r1 = list(paths(numkeypad, a, b))
-    r1 = filter_routes(r1)
+    r = filter_routes(paths(numkeypad, a, b))
     for _ in range(n):
-        r1 = best_routes(r1)
-    return r1[0]
+        r = filter_routes([route(dirkeypad, x) for x in r])
+    return r[0]
 
 
 def fullroute(code, n=2):
-    code = "A" + code  # always start at A
-    return "".join([abroute(a, b, n=n) for a, b in zip(code, code[1:])])
+    return "".join([abroute(a, b, n=n) for a, b in zip("A" + code, code)])
 
 
 def complexity(code):
@@ -117,6 +108,54 @@ def part_a(data):
     return sum(complexity(code) for code in codes)
 
 
+@cache
+def route2(pad, code):
+    # breakpoint()
+    seq = [paths(pad, a, b)[0] for a, b in zip("A" + code, code)]
+    return ["".join(x) if x else "" for x in seq]
+
+
+def clen(route):
+    return sum(len(k) * v for k, v in route.items())
+
+
+def iterate(r):
+    r2 = []
+    best = inf
+    for x in r:
+        rx = defaultdict(lambda: 0)
+        for k, v in x.items():
+            for y in route2(dirkeypad, k):
+                rx[y] += v
+        best = min(best, clen(rx))
+        r2 += [rx]
+    return [x for x in r2 if clen(x) == best]
+
+
+def fullroute2(code, n):
+    tot = 0
+    for a, b in zip("A" + code, code):
+        r = filter_routes(paths(numkeypad, a, b))
+        r = [dict(Counter([x])) for x in r]
+        for _ in range(n):
+            r = iterate(r)
+        tot += sum(len(k) * v for k, v in r[0].items())
+    return tot
+
+
+# def part_b(data):
+#     codes = data.lines()
+#     return sum(len(fullroute(code, n=4)) for code in codes)
+
+
+def complexity2(code, n):
+    return fullroute2(code, n=n) * int(re.findall(r"-*\d+", code)[0])
+
+
 def part_b(data):
     codes = data.lines()
-    return sum(len(fullroute(code, n=18)) for code in codes)
+    tot = 0
+    for code in codes:
+        tot += complexity2(code, 3)
+    return tot
+    # return 306335137543664

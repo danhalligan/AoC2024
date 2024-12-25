@@ -1,32 +1,59 @@
 def parse(data):
     x, y = data.sections()
-    vals = {}
+    wires = {}
     for line in x.lines():
         k, v = line.split(": ")
-        vals[k] = int(v)
+        wires[k] = int(v)
 
-    gates = []
+    operations = []
     for conn in y.lines():
         a, g, b, _, o = conn.split(" ")
-        gates += [[a, b, g, o]]
+        operations += [(a, g, b, o)]
 
-    return vals, gates
+    return wires, operations
+
+
+def process(op, op1, op2):
+    if op == "AND":
+        return op1 & op2
+    elif op == "OR":
+        return op1 | op2
+    elif op == "XOR":
+        return op1 ^ op2
 
 
 def part_a(data):
-    vals, gates = parse(data)
-    while gates:
-        a, b, g, o = gates.pop(0)
-        if a in vals and b in vals:
-            if g == "AND":
-                vals[o] = int(vals[a] & vals[b])
-            elif g == "OR":
-                vals[o] = int(vals[a] | vals[b])
-            elif g == "XOR":
-                vals[o] = int(vals[a] != vals[b])
+    wires, operations = parse(data)
+    while operations:
+        a, g, b, o = operations.pop(0)
+        if a in wires and b in wires:
+            wires[o] = process(g, wires[a], wires[b])
         else:
-            gates += [[a, b, g, o]]
+            operations += [(a, b, g, o)]
 
-    zvals = {k: v for k, v in vals.items() if k.startswith("z")}
-    zvals = [str(vals[k]) for k in sorted(zvals.keys(), reverse=True)]
-    return int("".join(zvals), 2)
+    zwires = {k: v for k, v in wires.items() if k.startswith("z")}
+    zwires = [str(wires[k]) for k in sorted(zwires.keys(), reverse=True)]
+    return int("".join(zwires), 2)
+
+
+def bad_gates(operations):
+    highest_z = sorted([o for *_, o in operations if o.startswith("z")])[-1]
+    for a, g, b, o in operations:
+        if o.startswith("z") and g != "XOR" and o != highest_z:
+            yield o
+        if g == "XOR" and not any(x.startswith(("x", "y", "z")) for x in [o, a, b]):
+            yield o
+        if g == "AND" and "x00" not in [a, b]:
+            for a2, g2, b2, _ in operations:
+                if (o == a2 or o == b2) and g2 != "OR":
+                    yield o
+        if g == "XOR":
+            for a2, g2, b2, _ in operations:
+                if (o == a2 or o == b2) and g2 == "OR":
+                    yield o
+
+
+def part_b(data):
+    _, operations = parse(data)
+    bad = set(bad_gates(operations))
+    return ",".join(sorted(bad))

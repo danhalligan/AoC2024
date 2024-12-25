@@ -29,11 +29,11 @@ def find_cheats(grid, start, end, size, lim=100):
             yield d <= size and j - i - d >= lim
 
 
-def part_a(data, lim):
+def part_a(data, lim=100):
     grid, start, end = parse(data)
     return sum(find_cheats(grid, start, end, 2, lim=lim))
 
 
-def part_b(data, lim):
+def part_b(data, lim=100):
     grid, start, end = parse(data)
     return sum(find_cheats(grid, start, end, 20, lim=lim))

@@ -43,8 +43,7 @@ class Data:
         }
 
     def sections(self):
-        a, b = self.raw.split("\n\n")
-        return Data(a), Data(b)
+        return list(map(Data, self.raw.split("\n\n")))
 
 
 class Example:

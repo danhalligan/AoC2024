@@ -7,7 +7,11 @@ from aoc2024.aoc import Puzzle, DateException
 # Test each day by importing the module and running part_a and part_b functions
 # against all the examples for that day's puzzle.
 # We skip tests if there is no defined function.
-@pytest.mark.parametrize("day,part", product(range(1, 25), ["a", "b"]))
+# There is no part b for Day 25
+puzzles = list(product(range(1, 26), ["a", "b"]))[:-1]
+
+
+@pytest.mark.parametrize("day,part", puzzles)
 def test_all(day, part):
     try:
         module = importlib.import_module(f"aoc2024.day{day:02d}")

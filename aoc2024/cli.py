@@ -8,7 +8,7 @@ app = typer.Typer()
 
 @app.command()
 def solve(days: List[int] = typer.Argument(None)):
-    days = days if days else list(range(1, 25))
+    days = days if days else range(1, 26)
     """Solve a challenge for given days"""
     for day in days:
         day = int(day)
